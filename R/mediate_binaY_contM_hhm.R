@@ -40,7 +40,7 @@
 #' sigma_em = sigma_ey = 1
 #' set.seed(123456)
 #' mydata1 = gen_data_hhm(I,J,n,beta,gamma,theta=0.75,beta_M=1,eta=0.4,sigma_a,
-#' sigma_ey,sigma_tau,sigma_em,binary.outcome=1,binary.mediator=0)
+#' sigma_ey,sigma_tau,sigma_em,binary.o=1,binary.m=0)
 #' # example 1: mediation analysis without covariates in outcome and mediator models
 #' res1 = mediate_binaY_contM_hhm(data=mydata1)
 #' print(res1)
@@ -72,13 +72,13 @@
 #' gamma = cumsum(c(0,0.3,0.3/2,0.3/(2^2),0.3/(2^3)))
 #' set.seed(123456)
 #' mydata3 = gen_data_hhm(I,J,n,beta,gamma,theta=0.75,beta_M=1,eta=0.4,sigma_a,
-#' sigma_ey,sigma_tau,sigma_em,binary.outcome=1,binary.mediator=0)
+#' sigma_ey,sigma_tau,sigma_em,binary.o=1,binary.m=0)
 #' res4 = mediate_binaY_contM_hhm(data=mydata3)
 #' print(res4)
 
 mediate_binaY_contM_hhm = function(data, outcome = "Y", mediator = "M", treatment = "A", cluster = "cluster", 
                                     period = "period", covariateY = NULL, covariateM = NULL, a0 = 0, a1 = 1){
-  #first test whether there are "Y","M","E","cluster","period" in data
+  #first test whether there are "Y","M","A","cluster","period" in data
   data = as.data.frame(data)
   require_covariate = c(outcome,mediator,treatment,cluster,period,covariateY,covariateM)
   all_covariate = colnames(data)
@@ -122,9 +122,9 @@ mediate_binaY_contM_hhm = function(data, outcome = "Y", mediator = "M", treatmen
   cal_prob = function(betaj,theta,betam,betax,gammaj,eta,gammax,sigma_em,sigma_tau,sigma_a){
     nu_11 = exp(betaj+theta*a1+betam*(gammaj+eta*a1+as.numeric(xm_j%*%gammax))+as.numeric(xy_j%*%betax))/(1+
                                                                                                                exp(betaj+theta*a1+betam*(gammaj+eta*a1+as.numeric(xm_j%*%gammax))+as.numeric(xy_j%*%betax)))
-    p1_11 = (1+0.5*betam^2*(sigma_em^2+sigma_tau^2))*(nu_11+(2*nu_11^3-3*nu_11^2+nu_11)*0.5*sigma_a^2)
-    p2_11 = -3/2*betam^2*(sigma_em^2+sigma_tau^2)*(nu_11^2+(6*nu_11^4-10*nu_11^3+4*nu_11^2)*0.5*sigma_a^2)
-    p3_11 = betam^2*(sigma_em^2+sigma_tau^2)*(nu_11^3+(12*nu_11^5-21*nu_11^4+9*nu_11^3)*0.5*sigma_a^2)
+    p1_11 = (1+0.5*betam^2*(sigma_em^2+sigma_tau^2))*(nu_11+(nu_11-3*nu_11^2+2*nu_11^3)*0.5*sigma_a^2)
+    p2_11 = -3/2*betam^2*(sigma_em^2+sigma_tau^2)*(nu_11^2+(4*nu_11^2-10*nu_11^3+6*nu_11^4)*0.5*sigma_a^2)
+    p3_11 = betam^2*(sigma_em^2+sigma_tau^2)*(nu_11^3+(9*nu_11^3-21*nu_11^4+12*nu_11^5)*0.5*sigma_a^2)
     pr_11 = p1_11+p2_11+p3_11
     #
     nu_01 = exp(betaj+theta*a1+betam*(gammaj+eta*a0+as.numeric(xm_j%*%gammax))+as.numeric(xy_j%*%betax))/(1+

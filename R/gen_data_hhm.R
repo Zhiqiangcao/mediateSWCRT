@@ -15,8 +15,8 @@
 #' @param sigma_ey The standard error of error term in outcome model (assuming it follows normal distribution with mean zero)
 #' @param sigma_tau The standard error of random effect in mediator model (assuming it follows normal distribution with mean zero)
 #' @param sigma_em The standard error of error term in mediator model (assuming it follows normal distribution with mean zero)
-#' @param binary.outcome (Required) If the outcome is binary, set to 1. If the outcome is continuous, set to 0
-#' @param binary.mediator (Required) If the mediator is binary, set to 1. If the mediator is continuous, set to 0
+#' @param binary.o (Required) If the outcome is binary, set to 1. If the outcome is continuous, set to 0
+#' @param binary.m (Required) If the mediator is binary, set to 1. If the mediator is continuous, set to 0
 #' 
 #' @return A data frame including cluster, period, id, E (time since intervention, i.e., exposure time), A (treatment state indicator),
 #'         c (the start time of the treatment), alpha (random effects of observations within a cluster), tau (random effects of mediator within a cluster),
@@ -43,23 +43,23 @@
 #' sigma_em = sigma_ey = 1
 #' # generate continuous outcome and continuous mediator
 #' mydata1 = gen_data_hhm(I,J,n,beta,gamma,theta=0.75,beta_M=0.625,eta=0.4,sigma_a,
-#' sigma_ey,sigma_tau,sigma_em,binary.outcome=0,binary.mediator=0)
+#' sigma_ey,sigma_tau,sigma_em,binary.o=0,binary.m=0)
 #' 
 #' # generate continuous outcome and binary mediator
 #' sigma_tau = 0.605    #using this value can produce ICC of mediator model is about 0.1 since  
 #' # ICC of binary variable is calculated as sigma_tau^2/(sigma_tau^2+pi^2/3)
 #' mydata2 = gen_data_hhm(I,J,n,beta,gamma,theta=0.75,beta_M=0.625,eta=0.4,sigma_a,
-#' sigma_ey,sigma_tau,sigma_em,binary.outcome=0,binary.mediator=1)
+#' sigma_ey,sigma_tau,sigma_em,binary.o=0,binary.m=1)
 #' 
 #' # generate binary outcome and continuous mediator
 #' sigma_a = 0.605
 #' mydata3 = gen_data_hhm(I,J,n,beta,gamma,theta=0.75,beta_M=0.625,eta=0.4,sigma_a,
-#' sigma_ey,sigma_tau,sigma_em,binary.outcome=1,binary.mediator=0)
+#' sigma_ey,sigma_tau,sigma_em,binary.o=1,binary.m=0)
 #' 
 #' # generate binary outcome and binary mediator
 #' sigma_tau = sigma_a = 0.605
 #' mydata4 = gen_data_hhm(I,J,n,beta,gamma,theta=0.75,beta_M=0.625,eta=0.4,sigma_a,
-#' sigma_ey,sigma_tau,sigma_em,binary.outcome=1,binary.mediator=1)
+#' sigma_ey,sigma_tau,sigma_em,binary.o=1,binary.m=1)
 #' 
 #' # generate continuous outcome and continuous mediator with different clusters and period
 #' I = 12  
@@ -69,11 +69,11 @@
 #' sigma_tau = sigma_a = 0.334
 #' sigma_em = sigma_ey = 1
 #' mydata5 = gen_data_hhm(I,J,n,beta,gamma,theta=0.75,beta_M=0.625,eta=0.4,sigma_a,
-#' sigma_ey,sigma_tau,sigma_em,binary.outcome=0,binary.mediator=0)
+#' sigma_ey,sigma_tau,sigma_em,binary.o=0,binary.m=0)
 
 
 gen_data_hhm = function(I,J,n,beta,gamma,theta,beta_M,eta,sigma_a,sigma_ey,
-                        sigma_tau,sigma_em,binary.outcome=0, binary.mediator=0){
+                        sigma_tau,sigma_em,binary.o=0, binary.m=0){
   # Generate data frame
   data = data.frame(
     "cluster" = integer(), # cluster
@@ -104,15 +104,15 @@ gen_data_hhm = function(I,J,n,beta,gamma,theta,beta_M,eta,sigma_a,sigma_ey,
       e = ifelse(j < crossover_times[i], 0, (j-crossover_times[i]) + 1) # time since treatment
       e_ijk = rnorm(n,0,sigma_em)
       epsilon_ijk = rnorm(n,0,sigma_ey)
-      if(binary.outcome == 0 & binary.mediator == 0){ #type 1: continuous outcome and continuous mediator
+      if(binary.o == 0 & binary.m == 0){ #type 1: continuous outcome and continuous mediator
         m_ijk = gamma[j] + eta*A_ij + tau_i + e_ijk
         y_ijk = beta[j] + theta*A_ij + beta_M*m_ijk + alpha_i + epsilon_ijk
-      }else if(binary.outcome == 0 & binary.mediator == 1){ #type 2: continuous outcome and binary mediator
+      }else if(binary.o == 0 & binary.m == 1){ #type 2: continuous outcome and binary mediator
         mu_ij = gamma[j] + eta*A_ij + tau_i
         mu_ij = exp(mu_ij)/(1+exp(mu_ij))  #to make mu_ij between 0 and 1
         m_ijk = rbinom(n=n, size=1, prob=mu_ij)
         y_ijk = beta[j] + theta*A_ij + beta_M*m_ijk + alpha_i + epsilon_ijk
-      }else if(binary.outcome == 1 & binary.mediator == 0){ #type 3: binary outcome and continuous mediator
+      }else if(binary.o == 1 & binary.m == 0){ #type 3: binary outcome and continuous mediator
         m_ijk = gamma[j] + eta*A_ij + tau_i + e_ijk
         mu_ijy = beta[j] + theta*A_ij + beta_M*m_ijk + alpha_i
         mu_ijy = exp(mu_ijy)/(1+exp(mu_ijy))

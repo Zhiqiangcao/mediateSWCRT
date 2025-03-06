@@ -44,7 +44,7 @@
 #' sigma_em = sigma_ey = 1
 #' set.seed(123456)
 #' mydata1 = gen_data_etm(I,J,n,beta,gamma,theta_e,beta_M=1.2,eta_e,sigma_a,
-#' sigma_ey,sigma_tau,sigma_em,binary.outcome=1,binary.mediator=1)
+#' sigma_ey,sigma_tau,sigma_em,binary.o=1,binary.m=1)
 #' # example 1: mediation analysis without covariates in outcome and mediator models
 #' res1 = mediate_binaY_binaM_etm(data=mydata1, method = "STA")
 #' print(res1)
@@ -88,7 +88,7 @@
 #' theta_e = c(0.8,1.6,2,2.3)
 #' set.seed(123456)
 #' mydata3 = gen_data_etm(I,J,n,beta,gamma,theta_e,beta_M=1,eta_e,sigma_a,
-#' sigma_ey,sigma_tau,sigma_em,binary.outcome=1,binary.mediator=1)
+#' sigma_ey,sigma_tau,sigma_em,binary.o=1,binary.m=1)
 #' res4 = mediate_binaY_binaM_etm(data=mydata3,method = "STA")
 #' print(res4)
 #' res4f = mediate_binaY_binaM_etm(data=mydata3,method = "GHQ")
