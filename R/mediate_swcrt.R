@@ -20,8 +20,8 @@
 #'       confounding variable is categorical, please set it to a series of binary variables in advance
 #'@param a0 The baseline treatment level. The default value is 0
 #'@param a1 The new treatment level. The default value is 1
-#'@param binary.outcome (Required) If the outcome is binary, set to 1. If the outcome is continuous, set to 0
-#'@param binary.mediator (Required) If the mediator is binary, set to 1. If the mediator is continuous, set to 0
+#'@param binary.o (Required) If the outcome is binary, set to 1. If the outcome is continuous, set to 0
+#'@param binary.m (Required) If the mediator is binary, set to 1. If the mediator is continuous, set to 0
 #'@param time.dependent (Required) If the treatment effect is time-dependent, set to TRUE. If the treatment effect is constant, set to FALSE
 #'
 #'@return A list containing point and interval estimates of NIE, NDE, TE and MP under constant treatment effect structure; or a list 
@@ -80,7 +80,7 @@
 #' set.seed(123456)
 #' mydata2 = gen_data_hhm(I,J,n,beta,gamma,theta=0.75,beta_M=1,eta=0.4,sigma_a,
 #' sigma_ey,sigma_tau,sigma_em,binary.outcome=1,binary.mediator=0)
-#' res2 = mediate_swcrt(data=mydata2,binary.outcome = 1)
+#' res2 = mediate_swcrt(data=mydata2,binary.o = 1)
 #' print(res2)
 #' 
 #' # example 3: exposure-time dependent treatment effect, mediation analysis of
@@ -126,29 +126,29 @@
 #' mydata4 = data.frame(mydata4,covdata)
 #' # using default STA method
 #' res4 = mediate_swcrt(data=mydata4,treatment = "E",covariate.outcome = c("X1","X2"), 
-#' covariate.mediator = c("X1","X2"),binary.mediator = 1, time.dependent = TRUE)
+#' covariate.mediator = c("X1","X2"),binary.m = 1, time.dependent = TRUE)
 #' print(res4)
 #' # using GHQ method
 #' res4f = mediate_swcrt(data=mydata4,treatment = "E",method = "GHQ",covariate.outcome = c("X1","X2"), 
-#' covariate.mediator = c("X1","X2"),binary.mediator = 1, time.dependent = TRUE)
+#' covariate.mediator = c("X1","X2"),binary.m = 1, time.dependent = TRUE)
 #' print(res4f)
 #' 
 #' 
 mediate_swcrt = function(data, method = "STA", outcome = "Y", mediator = "M", treatment = "A", cluster = "cluster", 
                          period = "period", covariate.outcome = NULL, covariate.mediator = NULL, a0 = 0, a1 = 1,
-                         binary.outcome = 0, binary.mediator = 0, time.dependent = FALSE){
+                         binary.o = 0, binary.m = 0, time.dependent = FALSE){
   data = as.data.frame(data)
   covariateY = covariate.outcome
   covariateM = covariate.mediator
   #constant treatment effect
   if(time.dependent == TRUE){ #exposure-time dependent treatment effect 
-    if (binary.outcome == 0 & binary.mediator == 0){ #type 1: continuous outcome and continuous mediator
+    if (binary.o == 0 & binary.m == 0){ #type 1: continuous outcome and continuous mediator
       delta_res = mediate_contY_contM_etm(data = data, outcome = outcome, mediator = mediator, treatment = treatment, cluster = cluster, 
                                           period = period, covariateY = covariateY, covariateM = covariateM, a0 = a0, a1 = a1)
-    }else if(binary.outcome == 0 & binary.mediator == 1){ #type 2: continuous outcome and binary mediator
+    }else if(binary.o == 0 & binary.m == 1){ #type 2: continuous outcome and binary mediator
       delta_res = mediate_contY_binaM_etm(data = data, method = method, outcome = outcome, mediator = mediator, treatment = treatment, 
                                           cluster = cluster, period = period, covariateY = covariateY, covariateM = covariateM, a0 = a0, a1 = a1)
-    }else if(binary.outcome == 1 & binary.mediator == 0){ #type 3: binary outcome and continuous mediator
+    }else if(binary.o == 1 & binary.m == 0){ #type 3: binary outcome and continuous mediator
       delta_res = mediate_binaY_contM_etm(data = data, outcome = outcome, mediator = mediator, treatment = treatment, cluster = cluster, 
                                           period = period, covariateY = covariateY, covariateM = covariateM, a0 = a0, a1 = a1)
     }else{#type 4: binary outcome and binary mediator
@@ -156,13 +156,13 @@ mediate_swcrt = function(data, method = "STA", outcome = "Y", mediator = "M", tr
                                           cluster = cluster, period = period, covariateY = covariateY, covariateM = covariateM, a0 = a0, a1 = a1)
     }
   }else{#constant treatment effect
-    if (binary.outcome == 0 & binary.mediator == 0){ #type 1: continuous outcome and continuous mediator
+    if (binary.o == 0 & binary.m == 0){ #type 1: continuous outcome and continuous mediator
       delta_res = mediate_contY_contM_hhm(data = data, outcome = outcome, mediator = mediator, treatment = treatment, cluster = cluster, 
                                           period = period, covariateY = covariateY, covariateM = covariateM, a0 = a0, a1 = a1)
-    }else if(binary.outcome == 0 & binary.mediator == 1){ #type 2: continuous outcome and binary mediator
+    }else if(binary.o == 0 & binary.m == 1){ #type 2: continuous outcome and binary mediator
       delta_res = mediate_contY_binaM_hhm(data = data, method = method, outcome = outcome, mediator = mediator, treatment = treatment, 
                                           cluster = cluster, period = period, covariateY = covariateY, covariateM = covariateM, a0 = a0, a1 = a1)
-    }else if(binary.outcome == 1 & binary.mediator == 0){ #type 3: binary outcome and continuous mediator
+    }else if(binary.o == 1 & binary.m == 0){ #type 3: binary outcome and continuous mediator
       delta_res = mediate_binaY_contM_hhm(data = data, outcome = outcome, mediator = mediator, treatment = treatment, cluster = cluster, 
                                           period = period, covariateY = covariateY, covariateM = covariateM, a0 = a0, a1 = a1)
     }else{#type 4: binary outcome and binary mediator
