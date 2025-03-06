@@ -62,7 +62,7 @@ sigma_tau = 0.605
 sigma_em = sigma_ey = 1
 set.seed(123456)
 mydata1 = gen_data_hhm(I,J,n,beta,gamma,theta=0.75,beta_M=1.2,eta=0.6,
-sigma_a,sigma_ey,sigma_tau,sigma_em,binary.outcome=0,binary.mediator=1)
+sigma_a,sigma_ey,sigma_tau,sigma_em,binary.o=0,binary.m=1)
 # example 1: mediation analysis without covariates in outcome and mediator models 
 res1 = mediate_contY_binaM_hhm(data=mydata1, method = "STA")
 print(res1)
@@ -104,7 +104,7 @@ beta = cumsum(c(0,0.1,0.1/2,0.1/(2^2),0.1/(2^3)))
 gamma = cumsum(c(0,0.3,0.3/2,0.3/(2^2),0.3/(2^3)))
 set.seed(123456)
 mydata3 = gen_data_hhm(I,J,n,beta,gamma,theta=0.75,beta_M=1,eta=0.8,
-sigma_a,sigma_ey,sigma_tau,sigma_em,binary.outcome=0,binary.mediator=1)
+sigma_a,sigma_ey,sigma_tau,sigma_em,binary.o=0,binary.m=1)
 res4 = mediate_contY_binaM_hhm(data=mydata3,method = "STA")
 print(res4)
 res4f = mediate_contY_binaM_hhm(data=mydata3,method = "GHQ")

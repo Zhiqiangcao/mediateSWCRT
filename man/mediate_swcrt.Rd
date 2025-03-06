@@ -16,8 +16,8 @@ mediate_swcrt(
   covariate.mediator = NULL,
   a0 = 0,
   a1 = 1,
-  binary.outcome = 0,
-  binary.mediator = 0,
+  binary.o = 0,
+  binary.m = 0,
   time.dependent = FALSE
 )
 }
@@ -50,9 +50,9 @@ confounding variable is categorical, please set it to a series of binary variabl
 
 \item{a1}{The new treatment level. The default value is 1}
 
-\item{binary.outcome}{(Required) If the outcome is binary, set to 1. If the outcome is continuous, set to 0}
+\item{binary.o}{(Required) If the outcome is binary, set to 1. If the outcome is continuous, set to 0}
 
-\item{binary.mediator}{(Required) If the mediator is binary, set to 1. If the mediator is continuous, set to 0}
+\item{binary.m}{(Required) If the mediator is binary, set to 1. If the mediator is continuous, set to 0}
 
 \item{time.dependent}{(Required) If the treatment effect is time-dependent, set to TRUE. If the treatment effect is constant, set to FALSE}
 }
@@ -76,7 +76,7 @@ sigma_tau = sigma_a = 0.334
 sigma_em = sigma_ey = 1
 set.seed(123456)
 mydata1 = gen_data_hhm(I,J,n,beta,gamma,theta=0.75,beta_M=0.625,eta=0.4,sigma_a,
-sigma_ey,sigma_tau,sigma_em,binary.outcome=0,binary.mediator=0)
+sigma_ey,sigma_tau,sigma_em,binary.o=0,binary.m=0)
 covdata = data.frame("X1" = numeric(), "X2" = numeric())
 set.seed(100)
 for(i in 1:I){
@@ -111,8 +111,8 @@ sigma_tau = 0.334
 sigma_em = sigma_ey = 1
 set.seed(123456)
 mydata2 = gen_data_hhm(I,J,n,beta,gamma,theta=0.75,beta_M=1,eta=0.4,sigma_a,
-sigma_ey,sigma_tau,sigma_em,binary.outcome=1,binary.mediator=0)
-res2 = mediate_swcrt(data=mydata2,binary.outcome = 1)
+sigma_ey,sigma_tau,sigma_em,binary.o=1,binary.m=0)
+res2 = mediate_swcrt(data=mydata2,binary.o = 1)
 print(res2)
 
 # example 3: exposure-time dependent treatment effect, mediation analysis of
@@ -128,7 +128,7 @@ eta_e = c(0.5,0.8,1.1)
 theta_e = c(0.5,1.0,1.5)
 set.seed(123456)
 mydata3 = gen_data_etm(I,J,n,beta,gamma,theta_e,beta_M=0.8,eta_e,sigma_a,
-sigma_ey,sigma_tau,sigma_em,binary.outcome=0,binary.mediator=0)
+sigma_ey,sigma_tau,sigma_em,binary.o=0,binary.m=0)
 res3 = mediate_swcrt(data=mydata3,treatment = "E",time.dependent = TRUE)
 print(res3)
 
@@ -146,7 +146,7 @@ sigma_tau = 0.605
 sigma_em = sigma_ey = 1
 set.seed(123456)
 mydata4 = gen_data_etm(I,J,n,beta,gamma,theta_e,beta_M=1.2,eta_e,sigma_a,
-sigma_ey,sigma_tau,sigma_em,binary.outcome=0,binary.mediator=1)
+sigma_ey,sigma_tau,sigma_em,binary.o=0,binary.m=1)
 set.seed(100)
 for(i in 1:I){
   for(j in 1:J){
@@ -158,11 +158,11 @@ for(i in 1:I){
 mydata4 = data.frame(mydata4,covdata)
 # using default STA method
 res4 = mediate_swcrt(data=mydata4,treatment = "E",covariate.outcome = c("X1","X2"), 
-covariate.mediator = c("X1","X2"),binary.mediator = 1, time.dependent = TRUE)
+covariate.mediator = c("X1","X2"),binary.m = 1, time.dependent = TRUE)
 print(res4)
 # using GHQ method
 res4f = mediate_swcrt(data=mydata4,treatment = "E",method = "GHQ",covariate.outcome = c("X1","X2"), 
-covariate.mediator = c("X1","X2"),binary.mediator = 1, time.dependent = TRUE)
+covariate.mediator = c("X1","X2"),binary.m = 1, time.dependent = TRUE)
 print(res4f)
 
 

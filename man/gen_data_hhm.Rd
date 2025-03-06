@@ -17,8 +17,8 @@ gen_data_hhm(
   sigma_ey,
   sigma_tau,
   sigma_em,
-  binary.outcome = 0,
-  binary.mediator = 0
+  binary.o = 0,
+  binary.m = 0
 )
 }
 \arguments{
@@ -46,9 +46,9 @@ gen_data_hhm(
 
 \item{sigma_em}{The standard error of error term in mediator model (assuming it follows normal distribution with mean zero)}
 
-\item{binary.outcome}{(Required) If the outcome is binary, set to 1. If the outcome is continuous, set to 0}
+\item{binary.o}{(Required) If the outcome is binary, set to 1. If the outcome is continuous, set to 0}
 
-\item{binary.mediator}{(Required) If the mediator is binary, set to 1. If the mediator is continuous, set to 0}
+\item{binary.m}{(Required) If the mediator is binary, set to 1. If the mediator is continuous, set to 0}
 }
 \value{
 A data frame including cluster, period, id, E (time since intervention, i.e., exposure time), A (treatment state indicator),
@@ -69,23 +69,23 @@ sigma_tau = sigma_a = 0.334
 sigma_em = sigma_ey = 1
 # generate continuous outcome and continuous mediator
 mydata1 = gen_data_hhm(I,J,n,beta,gamma,theta=0.75,beta_M=0.625,eta=0.4,sigma_a,
-sigma_ey,sigma_tau,sigma_em,binary.outcome=0,binary.mediator=0)
+sigma_ey,sigma_tau,sigma_em,binary.o=0,binary.m=0)
 
 # generate continuous outcome and binary mediator
 sigma_tau = 0.605    #using this value can produce ICC of mediator model is about 0.1 since  
 # ICC of binary variable is calculated as sigma_tau^2/(sigma_tau^2+pi^2/3)
 mydata2 = gen_data_hhm(I,J,n,beta,gamma,theta=0.75,beta_M=0.625,eta=0.4,sigma_a,
-sigma_ey,sigma_tau,sigma_em,binary.outcome=0,binary.mediator=1)
+sigma_ey,sigma_tau,sigma_em,binary.o=0,binary.m=1)
 
 # generate binary outcome and continuous mediator
 sigma_a = 0.605
 mydata3 = gen_data_hhm(I,J,n,beta,gamma,theta=0.75,beta_M=0.625,eta=0.4,sigma_a,
-sigma_ey,sigma_tau,sigma_em,binary.outcome=1,binary.mediator=0)
+sigma_ey,sigma_tau,sigma_em,binary.o=1,binary.m=0)
 
 # generate binary outcome and binary mediator
 sigma_tau = sigma_a = 0.605
 mydata4 = gen_data_hhm(I,J,n,beta,gamma,theta=0.75,beta_M=0.625,eta=0.4,sigma_a,
-sigma_ey,sigma_tau,sigma_em,binary.outcome=1,binary.mediator=1)
+sigma_ey,sigma_tau,sigma_em,binary.o=1,binary.m=1)
 
 # generate continuous outcome and continuous mediator with different clusters and period
 I = 12  
@@ -95,7 +95,7 @@ gamma = cumsum(c(0,0.3,0.3/2,0.3/(2^2),0.3/(2^3)))
 sigma_tau = sigma_a = 0.334
 sigma_em = sigma_ey = 1
 mydata5 = gen_data_hhm(I,J,n,beta,gamma,theta=0.75,beta_M=0.625,eta=0.4,sigma_a,
-sigma_ey,sigma_tau,sigma_em,binary.outcome=0,binary.mediator=0)
+sigma_ey,sigma_tau,sigma_em,binary.o=0,binary.m=0)
 }
 \references{
 Hussey M.A. and Hughes J.P. Design and analysis of stepped wedge cluster randomized trials. Contemporary Clinical Trials.
