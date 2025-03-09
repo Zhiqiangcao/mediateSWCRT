@@ -91,7 +91,7 @@
 mediate_binaY_binaM_hhm = function(data, method = "STA", outcome = "Y", mediator = "M", treatment = "A", cluster = "cluster", 
                                     period = "period", covariateY = NULL, covariateM = NULL, a0 = 0, a1 = 1){
   
-  #first test whether there are "Y","M","A","cluster","period" in data
+  #first test whether there are "Y","M","E","cluster","period" in data
   data = as.data.frame(data)
   require_covariate = c(outcome,mediator,treatment,cluster,period,covariateY,covariateM)
   all_covariate = colnames(data)

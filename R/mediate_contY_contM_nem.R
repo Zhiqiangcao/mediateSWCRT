@@ -1,5 +1,5 @@
 #' Mediation analysis function for continuous outcome and continuous mediator in a stepped wedge design 
-#' based on Hussey and Hughes model with a constant treatment effect
+#' based on nested exchangeable correlation model with a constant treatment effect 
 #' 
 #' After obtaining parameter estimates from linear mixed-effects models for both outcome and mediator models, 
 #' this function can obtain mediation measures including NIE, NDE, TE and MP assuming a constant treatment effect 
@@ -33,12 +33,13 @@
 #' beta = cumsum(c(0,0.1,0.1/2,0.1/(2^2)))
 #' gamma = cumsum(c(0,0.3,0.3/2,0.3/(2^2)))
 #' sigma_tau = sigma_a = 0.334
-#' sigma_em = sigma_ey = 1
+#' sigma_phi = sigma_psi = 0.6
+#' sigma_em = sigma_ey = 0.8
 #' set.seed(123456)
-#' mydata1 = gen_data_hhm(I,J,n,beta,gamma,theta=0.75,beta_M=0.625,eta=0.4,
-#' sigma_a,sigma_ey,sigma_tau,sigma_em,binary.o=0,binary.m=0)
+#' mydata1 = gen_data_nem(I,J,n,beta,gamma,theta=0.75,beta_M=0.625,eta=0.4,sigma_a,
+#' sigma_phi,sigma_ey,sigma_tau,sigma_psi,sigma_em,binary.o=0,binary.m=0)
 #' # example 1: mediation analysis without covariates in outcome and mediator models
-#' res1 = mediate_contY_contM_hhm(data=mydata1)
+#' res1 = mediate_contY_contM_nem(data=mydata1)
 #' print(res1)
 #' 
 #' # example 2: mediation analysis with different covariates in outcome and mediator models
@@ -53,12 +54,12 @@
 #'   }
 #' }
 #' mydata2 = data.frame(mydata1,covdata)
-#' res2 = mediate_contY_contM_hhm(data = mydata2, covariateY = c("X1"), 
+#' res2 = mediate_contY_contM_nem(data = mydata2,covariateY = c("X1"), 
 #' covariateM = c("X2"))
 #' print(res2)  
 #' 
 #' # example 3: mediation analysis with the same covariates in outcome and mediator models
-#' res3 = mediate_contY_contM_hhm(data = mydata2, covariateY = c("X1","X2"), 
+#' res3 = mediate_contY_contM_nem(data = mydata2,covariateY = c("X1","X2"), 
 #' covariateM = c("X1","X2"))
 #' print(res3)
 #' 
@@ -68,14 +69,14 @@
 #' beta = cumsum(c(0,0.1,0.1/2,0.1/(2^2),0.1/(2^3)))
 #' gamma = cumsum(c(0,0.3,0.3/2,0.3/(2^2),0.3/(2^3)))
 #' set.seed(123456)
-#' mydata3 = gen_data_hhm(I,J,n,beta,gamma,theta=0.75,beta_M=0.625,eta=0.4,
-#' sigma_a,sigma_ey,sigma_tau,sigma_em,binary.o=0,binary.m=0)
-#' res4 = mediate_contY_contM_hhm(data=mydata3)
+#' mydata3 = gen_data_nem(I,J,n,beta,gamma,theta=0.75,beta_M=0.625,eta=0.4,sigma_a,
+#' sigma_phi,sigma_ey,sigma_tau,sigma_psi,sigma_em,binary.o=0,binary.m=0)
+#' res4 = mediate_contY_contM_nem(data=mydata3)
 #' print(res4)
 
-mediate_contY_contM_hhm = function(data, outcome = "Y", mediator = "M", treatment = "A", cluster = "cluster", 
-                                    period = "period", covariateY = NULL, covariateM = NULL, a0 = 0, a1 = 1){
-  #first test whether there are "Y","M","E","cluster","period" in data
+mediate_contY_contM_nem = function(data, outcome = "Y", mediator = "M", treatment = "A", cluster = "cluster", 
+                                   period = "period", covariateY = NULL, covariateM = NULL, a0 = 0, a1 = 1){
+  #first test whether there are "Y","M","A","cluster","period" in data
   data = as.data.frame(data)
   require_covariate = c(outcome,mediator,treatment,cluster,period,covariateY,covariateM)
   all_covariate = colnames(data)
@@ -99,21 +100,21 @@ mediate_contY_contM_hhm = function(data, outcome = "Y", mediator = "M", treatmen
   #outcome model and mediator model formulas
   if (is.null(covariateY)) {
     formula_Y = as.formula(paste(outcome, "~", period, "+", treatment, 
-                                 "+", mediator, "+", "(1|cluster)", sep = ""))
+                                 "+", mediator, "+", "(1|cluster)", "+", "(1|period:cluster)", sep = ""))
   }
   else {
     formula_Y = as.formula(paste(outcome, "~", period, "+", treatment, "+", mediator,
                                  "+", paste(covariateY, collapse = "+"), 
-                                 "+", "(1|cluster)",sep = ""))
+                                 "+", "(1|cluster)", "+", "(1|period:cluster)",sep = ""))
   }
   if (is.null(covariateM)) {
     formula_M = as.formula(paste(mediator, "~", period, "+", treatment, 
-                                 "+", "(1|cluster)", sep = ""))
+                                 "+", "(1|cluster)", "+", "(1|period:cluster)", sep = ""))
   }
   else {
     formula_M = as.formula(paste(mediator, "~",period, "+", treatment, 
                                  "+", paste(covariateM, collapse = "+"),
-                                 "+", "(1|cluster)", sep = ""))
+                                 "+", "(1|cluster)", "+", "(1|period:cluster)",  sep = ""))
   }
   #number of period
   J = length(unique(data$period))

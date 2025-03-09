@@ -73,7 +73,7 @@
 
 
 gen_data_hhm = function(I,J,n,beta,gamma,theta,beta_M,eta,sigma_a,sigma_ey,
-                        sigma_tau,sigma_em,binary.o=0, binary.m=0){
+                        sigma_tau,sigma_em,binary.o=0,binary.m=0){
   # Generate data frame
   data = data.frame(
     "cluster" = integer(), # cluster
@@ -82,10 +82,10 @@ gen_data_hhm = function(I,J,n,beta,gamma,theta,beta_M,eta,sigma_a,sigma_ey,
     "E" = integer(), # time since intervention
     "A" = integer(), # treatment state indicator
     "c" = integer(), # the start time of the treatment
-    "alpha" = numeric(), #random effects of observations within a cluster
-    "tau" = numeric(), #random effects of mediation within a cluster
-    "M" = numeric(), #mediator
-    "Y" = numeric()  #outcome
+    "alpha" = numeric(), # random effects of observations within a cluster
+    "tau" = numeric(), # random effects of mediation within a cluster
+    "M" = numeric(), # mediator
+    "Y" = numeric()  # outcome
   )
   # Generate crossover times (assumes a "balanced and complete" design)
   n_clust_per_time = I/(J-1)
