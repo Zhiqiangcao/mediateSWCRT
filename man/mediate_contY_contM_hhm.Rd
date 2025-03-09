@@ -74,11 +74,13 @@ for(i in 1:I){
   }
 }
 mydata2 = data.frame(mydata1,covdata)
-res2 = mediate_contY_contM_hhm(data=mydata2,covariateY = c("X1"), covariateM = c("X2"))
+res2 = mediate_contY_contM_hhm(data = mydata2, covariateY = c("X1"), 
+covariateM = c("X2"))
 print(res2)  
 
 # example 3: mediation analysis with the same covariates in outcome and mediator models
-res3 = mediate_contY_contM_hhm(data=mydata2,covariateY = c("X1","X2"), covariateM = c("X1","X2"))
+res3 = mediate_contY_contM_hhm(data = mydata2, covariateY = c("X1","X2"), 
+covariateM = c("X1","X2"))
 print(res3)
 
 # example 4: mediation analysis with different clusters and periods
