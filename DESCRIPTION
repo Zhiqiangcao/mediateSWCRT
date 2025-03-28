@@ -1,0 +1,12 @@
+Package: mediateSWCRT
+Title: Mediation Analysis in a Stepped Wedge Cluster Randomized Trials
+Version: 0.3
+Author: Zhiqiang Cao; Fan Li
+Maintainer: Zhiqiang Cao <zcaoae@connect.ust.hk>
+Description: Functions for calculating the point and interval estimates of the natural indirect effect (NIE), natural direct effect (NDE), total effect (TE), and mediation proportion (MP) in a stepped wedge cluster randomized trials with a constant treatment effect or an exposure-time dependent treatment effect. We perform the methods considered in Cao and Li (2024) Assessing mediation in cross-sectional stepped wedge cluster randomized trials.
+License: GPL
+Depends: R (>= 4.3.0)
+Imports: lme4,stats
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.1
